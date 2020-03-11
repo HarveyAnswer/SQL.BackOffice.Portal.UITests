@@ -71,53 +71,36 @@ namespace RegressionPackUITests.Utils
                 currentUrl = "Failed to Retrieve URL";
             }
 
+            ExtentTest node = null;
+                        
 
-            if (this.scenarioContext.TestError == null)
+            switch (stepType)
             {
-                this.TakeScreenshot();
 
-                ExtentTest node = null;
-
-                if (stepType == "Given")
-                {
-                    node = this.scenario.CreateNode<Given>("Given: " + stepName);
-                }
-                else if (stepType == "When")
-                {
-                    node = this.scenario.CreateNode<When>("When: " + stepName);
-                }
-                else if (stepType == "Then")
-                {
-                    node = this.scenario.CreateNode<Then>("Then: " + stepName);
-                }
-
-                node.Log(Status.Info, screenshot)
-                    .Log(Status.Info, currentUrl);
+                case "Given":
+                    node = scenario.CreateNode<Given>("Given: " + stepName);
+                    break;
+                case "When":
+                    node = scenario.CreateNode<When>("When: " + stepName);
+                    break;
+                case "Then":
+                    node = scenario.CreateNode<Then>("Then" + stepName);
+                    break;
+                case "And":
+                    node = scenario.CreateNode<And>("And" + stepName);
+                    break;
+                    
             }
-            else if (this.scenarioContext.TestError != null)
+
+            if (scenarioContext.TestError != null)
             {
-                this.TakeScreenshot();
-
-                ExtentTest node = null;
-
-                if (stepType == "Given")
-                {
-                    node = this.scenario.CreateNode<Given>("Given: " + stepName);
-                }
-                else if (stepType == "When")
-                {
-                    node = this.scenario.CreateNode<When>("When: " + stepName);
-                }
-                else if (stepType == "Then")
-                {
-                    node = this.scenario.CreateNode<Then>("Then: " + stepName);
-                }
-
+                this.TakeScreenshot();                
                 node.Fail(this.scenarioContext.TestError.Message)
                     .Fail(this.GetInnerExceptionMessage())
                     .Log(Status.Info, screenshot)
                     .Log(Status.Info, currentUrl);
             }
+            
         }
 
         [After]
